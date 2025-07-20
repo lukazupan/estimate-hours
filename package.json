@@ -1,5 +1,5 @@
 {
-  "name": "your-project-name",
+  "name": "estimate-hours",
   "version": "1.0.0",
   "description": "A modern Node.js project using ES modules and proper exports",
   "type": "module",
@@ -18,12 +18,18 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "axios": "^1.8.4",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "fs": "^0.0.1-security",
+    "npx": "^10.2.2",
+    "openai": "^5.10.1",
     "path": "^0.12.7",
     "prompt-sync": "^4.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/node": "^24.0.15"
+  }
 }

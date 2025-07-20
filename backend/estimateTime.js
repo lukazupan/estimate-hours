@@ -5,11 +5,13 @@ import { execSync } from 'child_process';
 import { error } from 'console';
 import { fileURLToPath } from 'url';
 
+import dotenv from 'dotenv'
+dotenv.config()
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// const targetDir = path.join(__dirname, 'clonedRepos');
 
-const getRepos = async (username) => {
+export const getRepos = async (username) => {
     try {
         const response = await axios.get(`https://api.github.com/users/${username}/repos`);
         return response.data;
@@ -19,18 +21,18 @@ const getRepos = async (username) => {
     }
 }
 
-const getSpecificRepo = async (username, repoName) => {
+export const getSpecificRepo = async (username, repoName) => {
     try {
-        const response = await axios.get(`https://api.github.com/users/${username}/repos/${repoName}`)
+        const response = await axios.get(`https://api.github.com/repos/${username}/${repoName}`)
         return response.data;
-    } catch(error) {
+    } catch (error) {
         console.log(error.message);
         return;
     }
 }
 
 const cloneRepo = (repoUrl, targetDir) => {
-    execSync(`git clone --no-checkout ${repoUrl}`, {cwd: targetDir});
+    execSync(`git clone --no-checkout ${repoUrl}`, { cwd: targetDir });
 }
 
 const calculateEstimate = (repoPath) => {
@@ -57,7 +59,7 @@ const calculateEstimate = (repoPath) => {
 const getEstimatedTime = (publicRepos, targetDir) => {
     let time = 0;
 
-    for(const repo of publicRepos) {
+    for (const repo of publicRepos) {
         const repoPath = path.join(targetDir, repo.name);
 
         const hours = calculateEstimate(repoPath);
@@ -67,18 +69,17 @@ const getEstimatedTime = (publicRepos, targetDir) => {
 }
 
 const removeOldRepos = (targetDir) => {
-    // Clean up existing directory
-    if(fs.existsSync(targetDir)) {
+    if (fs.existsSync(targetDir)) {
         fs.rmSync(targetDir, { recursive: true, force: true });
     }
-    // Create fresh directory
     fs.mkdirSync(targetDir, { recursive: true });
 }
 
 export async function estimateTime(username) {
 
-    //fix targetDir at initialisation
-    const targetDir = path.join(targetDir, username);
+    const baseDir = path.join(__dirname, 'clonedRepos');
+    const targetDir = path.join(baseDir, username);
+
     removeOldRepos(targetDir);
 
     const publicRepos = await getRepos(username);
