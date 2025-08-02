@@ -15,7 +15,7 @@ export const getRepos = async (username) => {
     try {
         const response = await axios.get(`https://api.github.com/users/${username}/repos`);
         return response.data
-    } catch {
+    } catch (error) {
         console.log(error.message)
         return []
     }
