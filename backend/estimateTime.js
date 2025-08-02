@@ -1,97 +1,120 @@
-import axios from 'axios';
-import path from 'path';
-import fs from 'fs';
-import { execSync } from 'child_process';
-import { error } from 'console';
-import { fileURLToPath } from 'url';
+import axios from 'axios'
+import path from 'path'
+import fs from 'fs'
+import { execSync } from 'child_process'
+import { error } from 'console'
+import { fileURLToPath } from 'url'
 
 import dotenv from 'dotenv'
 dotenv.config()
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export const getRepos = async (username) => {
     try {
         const response = await axios.get(`https://api.github.com/users/${username}/repos`);
-        return response.data;
+        return response.data
     } catch {
-        console.log(error.message);
-        return [];
+        console.log(error.message)
+        return []
     }
 }
 
 export const getSpecificRepo = async (username, repoName) => {
     try {
         const response = await axios.get(`https://api.github.com/repos/${username}/${repoName}`)
-        return response.data;
+        return response.data
     } catch (error) {
-        console.log(error.message);
-        return;
+        console.error(`Failed to fetch repo ${username}/${repoName}:`, error.message)
+        return null
     }
 }
 
 const cloneRepo = (repoUrl, targetDir) => {
-    execSync(`git clone --no-checkout ${repoUrl}`, { cwd: targetDir });
+    execSync(`git clone --no-checkout ${repoUrl}`, { cwd: targetDir })
 }
 
 const calculateEstimate = (repoPath) => {
     try {
-        const command = `ein tool estimate-hours ${repoPath}`;
-        const stdout = execSync(command, { encoding: 'utf-8' });
+        const command = `ein tool estimate-hours ${repoPath}`
+        const stdout = execSync(command, { encoding: 'utf-8' })
 
-        const lines = stdout.split('\n');
-        const totalHoursLine = lines.find(line => line.includes('total hours'));
-        let hours = 0;
+        const lines = stdout.split('\n')
+        const totalHoursLine = lines.find(line => line.includes('total hours'))
+        let hours = 0
 
         if (totalHoursLine) {
-            const parts = totalHoursLine.split(':');
-            hours = parseFloat(parts[1].trim()) || 0;
+            const parts = totalHoursLine.split(':')
+            hours = parseFloat(parts[1].trim()) || 0
         }
 
-        return hours;
+        return hours
     } catch (error) {
-        console.error(`Estimation failed for ${repoPath}: ${error.message}`);
-        return 0;
+        console.error(`Estimation failed for ${repoPath}: ${error.message}`)
+        return 0
     }
 }
 
 const getEstimatedTime = (publicRepos, targetDir) => {
-    let time = 0;
+    let time = 0
 
     for (const repo of publicRepos) {
-        const repoPath = path.join(targetDir, repo.name);
+        const repoPath = path.join(targetDir, repo.name)
 
-        const hours = calculateEstimate(repoPath);
-        time += hours;
+        const hours = calculateEstimate(repoPath)
+        time += hours
     }
-    return time;
+    return time
 }
 
 const removeOldRepos = (targetDir) => {
     if (fs.existsSync(targetDir)) {
-        fs.rmSync(targetDir, { recursive: true, force: true });
+        fs.rmSync(targetDir, { recursive: true, force: true })
     }
-    fs.mkdirSync(targetDir, { recursive: true });
+    fs.mkdirSync(targetDir, { recursive: true })
+}
+
+export const estimateSpecificTime = async (username, repoName) => {
+    const baseDir = path.join(__dirname, 'clonedRepos')
+    const targetDir = path.join(baseDir, username)
+
+    removeOldRepos(targetDir)
+
+    const repo = await getSpecificRepo(username, repoName)
+    
+    if (!repo) {
+        throw new Error(`Repository ${username}/${repoName} not found`)
+    }
+    
+    cloneRepo(repo.clone_url, targetDir)
+    
+    const repoPath = path.join(targetDir, repoName)
+    const time = calculateEstimate(repoPath)
+    const roundedTime = Math.round(time)
+
+    return {
+        data: repo,
+        time: roundedTime,
+    }
 }
 
 export async function estimateTime(username) {
 
-    const baseDir = path.join(__dirname, 'clonedRepos');
-    const targetDir = path.join(baseDir, username);
+    const baseDir = path.join(__dirname, 'clonedRepos')
+    const targetDir = path.join(baseDir, username)
 
-    removeOldRepos(targetDir);
+    removeOldRepos(targetDir)
 
-    const publicRepos = await getRepos(username);
+    const publicRepos = await getRepos(username)
 
     for (const repo of publicRepos) {
-        const repoUrl = repo.clone_url;
-        cloneRepo(repoUrl, targetDir);
+        const repoUrl = repo.clone_url
+        cloneRepo(repoUrl, targetDir)
     }
 
-    const totalHours = getEstimatedTime(publicRepos, targetDir);
-    const roundedHours = Math.round(totalHours);
+    const totalHours = getEstimatedTime(publicRepos, targetDir)
+    const roundedHours = Math.round(totalHours)
 
-    console.log(`Estimated total hours: ${roundedHours} h`);
     return roundedHours;
 }

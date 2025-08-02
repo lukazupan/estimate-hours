@@ -8,12 +8,27 @@ export async function getEstimation(username: string): Promise<any> {
     return data
 }
 
+export async function getSpecificEstimation(username: string, repoName: string): Promise<any> {
+    const response = await fetch(`http://localhost:8080/estimate-specific-time?username=${username}&repoName=${repoName}`)
+
+    const data = await response.json()
+
+    console.log(data)
+
+    return data
+}
+
 export async function getSummary (data: any, estimatedTime: number): Promise<any> {
-    const params = new URLSearchParams({
-        data: JSON.stringify(data),
-        estimatedTime: estimatedTime.toString()
+    const response = await fetch('http://localhost:8080/agent-summary', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            data: data,
+            estimatedTime: estimatedTime
+        })
     })
     
-    const response = await fetch(`http://localhost:8080/agent-summary?${params}`)
     return await response.json()
 }
