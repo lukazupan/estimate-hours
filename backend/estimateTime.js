@@ -2,7 +2,6 @@ import axios from 'axios'
 import path from 'path'
 import fs from 'fs'
 import { execSync } from 'child_process'
-import { error } from 'console'
 import { fileURLToPath } from 'url'
 
 import dotenv from 'dotenv'
@@ -116,5 +115,5 @@ export async function estimateTime(username) {
     const totalHours = getEstimatedTime(publicRepos, targetDir)
     const roundedHours = Math.round(totalHours)
 
-    return roundedHours;
+    return roundedHours
 }
