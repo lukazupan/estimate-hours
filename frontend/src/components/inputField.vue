@@ -1,77 +1,81 @@
 <template>
-    <div class="container">
-        <div>
-            <h1>Estimate time</h1>
-            <div class="">
-                <p>Want to know how much time you spent coding your project ?</p>
-            </div>
-        </div>
-        <div>
-            <input class="inputField" v-model="username" placeholder="Enter username" />
-            <input class="inputField" v-model="repoName" placeholder="Enter repo name" />
-        </div>
-        <button class="button" @click="handleClick">Get info</button>
-        <div v-if="estimation">
-            <p>{{ estimation.message }}</p>
-            <p>Estimated time: {{ estimation.time }} hours</p>
-        </div>
-
-        <div>
-            <p>{{ summary }}</p>
-        </div>
-    </div>
+	<div class="container">
+		<input
+			class="inputField"
+			v-model="username"
+			placeholder="Enter username"
+			type="text"
+			autofocus
+		/>
+		<button
+			type="button"
+			@click="handleClick"
+			class="input-button"
+		>get info</button>
+	</div>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import { getSpecificEstimation, getSummary } from '../api'
+<script lang="ts" setup>
+import { ref, defineEmits } from 'vue'
+
+const emit = defineEmits<{
+	getRepos: [username: string]
+}>()
 
 const username = ref('')
-const repoName = ref('')
-const estimation = ref(null)
-const summary = ref('')
 
-async function handleClick() {
-    if (!username.value) {
-        console.log("Username can't be empty.")
-        return
-    }
-    
-    if (!repoName.value) {
-        console.log("Repo name can't be empty.")
-        return
-    }
-    
-    try {
-        estimation.value = await getSpecificEstimation(username.value, repoName.value)
-        
-        if (estimation.value) {
-            summary.value = await getSummary(estimation.value.data, estimation.value.time)
-        }
-    } catch (error) {
-        console.error('Error getting estimation or summary:', error)
-        estimation.value = null
-        summary.value = ''
-    }
+const handleClick = () => {
+	const trimmedUsername = username.value.trim()
+
+  	if (trimmedUsername) {
+    	emit('getRepos', trimmedUsername)
+  	}
 }
 </script>
 
 <style scoped>
 .container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
+	display: flex;
+	flex-direction: row;
+
+	align-items: center;
+	gap: 10px;
 }
 
 .inputField {
-    width: 200px;
-    height: 30px;
-    margin: 10px;
+	background-color: #1a1a1a;
+	border: 1px solid #1a1a1a;
+	border-radius: 8px;
+
+	height: 20px;
+	padding: 10px;
 }
 
-.button {
-    width: 200px;
-    margin: 10px;
+.inputField:focus {
+	outline: none;
+	box-shadow: none;
+}
+
+.input-button {
+	padding: 10px;
+
+	border: 1px solid #1a1a1a;
+	border-radius: 8px;
+
+	text-align: center;
+	color: gray;
+	font-weight:400;
+
+	transition: color 0.1s;
+}
+
+.input-button:hover {
+	border: 1px solid rgb(60, 255, 0);
+	color: white;
+}
+
+.input-button:focus {
+    outline: none;
+    box-shadow: none;
 }
 </style>
