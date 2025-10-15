@@ -8,7 +8,7 @@
         type="text"
         autofocus
       />
-      <button type="button" @click="handleClick" class="input-button">get info</button>
+      <button class="input-button" type="button" @click="handleClick">get info</button>
     </div>
   </div>
 </template>
@@ -18,7 +18,7 @@ import { ref, defineEmits } from 'vue'
 
 const emit = defineEmits<{
   getRepos: [username: string]
-	input: []
+  input: []
 }>()
 
 const username = ref('')
@@ -62,10 +62,12 @@ const handleClick = () => {
 
 .input-button {
   padding: 10px;
+  box-sizing: border-box;
 
-  border: 1px solid #1a1a1a;
+  border: 2px solid #1a1a1a;
   border-radius: 8px;
 
+  font-family: var(--font-bitcount);
   text-align: center;
   color: gray;
   font-weight: 500;
@@ -74,7 +76,7 @@ const handleClick = () => {
 }
 
 .input-button:hover {
-  border: 1px solid rgb(60, 255, 0);
+  border: 2px solid #2692ff;
   color: white;
 }
 
