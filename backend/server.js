@@ -13,17 +13,17 @@ const PORT = 8080
 app.listen(PORT, () => console.log(`its alive on http://localhost:${PORT}`))
 
 app.get('/repos', async (req, res) => {
-    try {
-        const {
-            username,
-        } = req.query
+  try {
+    const {
+      username,
+    } = req.query
 
-        const publicRepos = await getRepos(username)
+    const publicRepos = await getRepos(username)
 
-        return res.status(200).json({ publicRepos })
-    } catch(error) {
-        console.error(error)
-    }
+    return res.status(200).json({ publicRepos })
+  } catch (error) {
+    console.error(error)
+  }
 })
 
 app.get('/estimate-time', async (req, res) => {
@@ -65,6 +65,7 @@ app.get('/estimate-specific-time', async (req, res) => {
 })
 
 app.post('/agent-summary', async (req, res) => {
+
   try {
     const { data, estimatedTime } = req.body
 

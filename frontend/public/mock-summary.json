@@ -1,0 +1,17 @@
+{
+  "sections": [
+    { "title": "Repository", "type": "text", "value": "example-repo" },
+    { "title": "Development Hours", "type": "number", "value": 12 },
+    {
+      "title": "Purpose",
+      "type": "text",
+      "value": "A small example project demonstrating core features and structure."
+    },
+    {
+      "title": "Size & Complexity",
+      "type": "assessment",
+      "value": "Small (several modules, low complexity)"
+    },
+    { "title": "Key Features", "type": "bullet_list", "value": ["Auth", "REST API", "Vue 3"] }
+  ]
+}
