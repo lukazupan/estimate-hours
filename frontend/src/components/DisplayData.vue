@@ -25,7 +25,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   getRepos: [username: string]
   select: [el: string]
-  input: []
+  clearSummary: []
+  clearRepo: []
 }>()
 
 const dropdownVisible = ref(false)
@@ -34,7 +35,8 @@ const isVisible = computed(() => dropdownVisible.value && props.repoNames.length
 
 const handleInput = () => {
   dropdownVisible.value = true
-  emit('input')
+  emit('clearSummary')
+  emit('clearRepo')
 }
 
 const handleGetRepos = (username: string) => {
@@ -43,6 +45,7 @@ const handleGetRepos = (username: string) => {
 
 const handleSelect = (el: string) => {
   emit('select', el)
+  emit('clearSummary')
 }
 </script>
 

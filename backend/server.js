@@ -14,9 +14,7 @@ app.listen(PORT, () => console.log(`its alive on http://localhost:${PORT}`))
 
 app.get('/repos', async (req, res) => {
   try {
-    const {
-      username,
-    } = req.query
+    const { username } = req.query
 
     const publicRepos = await getRepos(username)
 
@@ -65,7 +63,6 @@ app.get('/estimate-specific-time', async (req, res) => {
 })
 
 app.post('/agent-summary', async (req, res) => {
-
   try {
     const { data, estimatedTime } = req.body
 

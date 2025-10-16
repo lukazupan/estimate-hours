@@ -38,6 +38,11 @@ const size = ref('')
 watch(
   () => props.summary,
   (val) => {
+    if (!val) {
+      parsedSummary.value = null
+      return
+    }
+
     parsedSummary.value = JSON.parse(val.summary)
 
     repoName.value = parsedSummary.value.sections[0].value
@@ -92,10 +97,10 @@ const isLoading = computed(() => props.repo && !props.summary)
 .card .divider {
   grid-column-start: 1;
   grid-column-end: 3;
-	margin-bottom: 8px;
+  margin-bottom: 8px;
 
   border: 1px solid white;
-	border-radius: 8px;
+  border-radius: 8px;
 }
 
 .card .description {

@@ -5,7 +5,8 @@
       <display-data
         @get-repos="handleGetRepos"
         @select="handleRepoSelected"
-        @input="handleInput"
+        @clear-summary="handleClearSummary"
+				@clear-repo="handleClearRepo"
         :repo-names="publicRepoNames"
         :repo="selectedRepo"
         :summary="summary"
@@ -22,7 +23,7 @@ import { ref } from 'vue'
 let publicRepos: any[] = []
 let summary = ref<object>()
 const publicRepoNames = ref<string[]>([])
-const selectedRepo = ref(null)
+const selectedRepo = ref(undefined)
 const selectedRepoName = ref<string>('')
 const currentUsername = ref('')
 
@@ -50,7 +51,8 @@ const handleRepoSelected = (el: string) => {
   generateRepoSummary()
 }
 
-const handleInput = () => {}
+const handleClearRepo = () => selectedRepo.value = undefined
+const handleClearSummary = () => summary.value = undefined
 
 const generateRepoSummary = async () => {
   const result = await getSpecificEstimation(currentUsername.value, selectedRepoName.value)
