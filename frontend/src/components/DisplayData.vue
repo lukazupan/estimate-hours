@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import Dropdown from './Dropdown.vue'
-import inputField from './inputField.vue'
+import InputField from './InputField.vue'
 import EstimateCard from './EstimateCard.vue'
 
 const props = defineProps<{
