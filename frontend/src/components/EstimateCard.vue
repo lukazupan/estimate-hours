@@ -52,7 +52,7 @@ watch(
   },
 )
 
-const showCard = computed(() => props.repo !== null)
+const showCard = computed(() => props.repo)
 const isLoading = computed(() => props.repo && !props.summary)
 </script>
 
@@ -122,7 +122,6 @@ const isLoading = computed(() => props.repo && !props.summary)
   border-radius: 50%;
   border-top-color: #2692ff;
   animation: spin 1s ease-in-out infinite;
-  margin-bottom: 15px;
 }
 
 @keyframes spin {
