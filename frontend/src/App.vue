@@ -5,24 +5,23 @@
       <display-data
         @get-repos="handleGetRepos"
         @select="handleRepoSelected"
+        @input="handleInput"
         :repo-names="publicRepoNames"
+        :repo="selectedRepo"
+        :summary="summary"
       />
-    </div>
-    <div class="card-container">
-      <estimate-card :repo="selectedRepo" :summary="summary" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import DisplayData from './components/DisplayData.vue'
-import EstimateCard from './components/EstimateCard.vue'
 import { getRepos, getSpecificEstimation, getSummary } from './api'
 import { ref } from 'vue'
 
 let publicRepos: any[] = []
-const publicRepoNames = ref<string[]>([])
 let summary = ref<object>()
+const publicRepoNames = ref<string[]>([])
 const selectedRepo = ref(null)
 const selectedRepoName = ref<string>('')
 const currentUsername = ref('')
@@ -50,6 +49,8 @@ const handleRepoSelected = (el: string) => {
   })
   generateRepoSummary()
 }
+
+const handleInput = () => {}
 
 const generateRepoSummary = async () => {
   const result = await getSpecificEstimation(currentUsername.value, selectedRepoName.value)
@@ -92,12 +93,5 @@ const generateRepoSummary = async () => {
   justify-content: center;
   padding: 20px 0;
   min-height: 150px;
-}
-
-.card-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
 }
 </style>

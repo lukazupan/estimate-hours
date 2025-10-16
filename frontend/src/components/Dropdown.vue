@@ -1,6 +1,8 @@
 <template>
   <div ref="dropdownRef" class="dropdown-container">
-    <button class="dropdown-button font-bitcount" @click="handleDropdownVisibility">Select repo</button>
+    <button class="dropdown-button font-bitcount" @click="handleDropdownVisibility">
+      Select repo
+    </button>
     <div v-if="visible" class="dropdown-items">
       <button class="dropdown-item-button" v-for="el in elements" @click="onClick(el)">
         {{ el }}
@@ -88,6 +90,9 @@ const onClick = (el: string) => {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  max-height: 300px;
+  overflow-y: scroll;
 
   background-color: #1a1a1a;
   border-radius: 8px;

@@ -1,8 +1,11 @@
 <template>
   <div class="container">
-    <inputField @input="handleInput" @get-repos="handleGetRepos"/>
+    <input-field @input="handleInput" @get-repos="handleGetRepos" />
     <div class="dropdown" v-if="isVisible">
-      <Dropdown :elements="repoNames" @select="handleSelect"/>
+      <Dropdown :elements="repoNames" @select="handleSelect" />
+    </div>
+    <div class="card-container">
+      <estimate-card :repo="repo" :summary="summary" />
     </div>
   </div>
 </template>
@@ -11,14 +14,18 @@
 import { computed, ref } from 'vue'
 import Dropdown from './Dropdown.vue'
 import inputField from './inputField.vue'
+import EstimateCard from './EstimateCard.vue'
 
 const props = defineProps<{
-	repoNames: string[]
+  repoNames: string[]
+  repo: any
+  summary: any
 }>()
 
 const emit = defineEmits<{
-	getRepos: [username: string]
+  getRepos: [username: string]
   select: [el: string]
+  input: []
 }>()
 
 const dropdownVisible = ref(false)
@@ -27,10 +34,11 @@ const isVisible = computed(() => dropdownVisible.value && props.repoNames.length
 
 const handleInput = () => {
   dropdownVisible.value = true
+  emit('input')
 }
 
 const handleGetRepos = (username: string) => {
-	emit('getRepos', username)
+  emit('getRepos', username)
 }
 
 const handleSelect = (el: string) => {
@@ -48,6 +56,13 @@ const handleSelect = (el: string) => {
   width: 100%;
 
   min-height: 120px;
+}
+
+.card-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .dropdown {
